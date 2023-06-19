@@ -9,13 +9,17 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lesson2movies.App
+import com.example.lesson2movies.R
 import com.example.lesson2movies.databinding.MainFragmentBinding
 import com.example.lesson2movies.domain.Movie
+import com.example.lesson2movies.ui.detail.DetailsFragment
 
 class MainFragment:Fragment() {
     private lateinit var binding: MainFragmentBinding
     private lateinit var moviesViewModel: MoviesViewModel
-    private val adapter = ListMoviesAdapter()
+    private val adapter = ListMoviesAdapter({
+        showDetailMovies(it)
+    })
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,6 +70,19 @@ class MainFragment:Fragment() {
     private fun showProgress(show: Boolean) {
         binding.mainFragmentLoadingLayout.isVisible = show
         binding.mainFragmentRecyclerView.isVisible = !show
+    }
+
+    private fun showDetailMovies(movie:Movie) {
+        activity?.supportFragmentManager?.beginTransaction()
+            ?.replace(R.id.container, DetailsFragment().also { fragment ->
+                fragment.arguments =
+                    Bundle().also { bundle ->
+                        bundle.putParcelable(
+                            DetailsFragment.BUNDLE_EXTRA, movie
+                        )
+                    }
+            })
+            ?.addToBackStack("")?.commit()
     }
 
     companion object {
