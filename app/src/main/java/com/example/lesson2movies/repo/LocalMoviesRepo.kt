@@ -1,10 +1,13 @@
 package com.example.lesson2movies.repo
 
+import android.os.Handler
+import android.os.Looper
 import com.example.lesson2movies.domain.Genre
 import com.example.lesson2movies.domain.Movie
 
-class LocalMovieRepo:IMovieRepo {
-    override fun loadMovies(): List<Movie> = listOf(
+private const val LOAD_DATA_DELAY = 3_000L
+class LocalMoviesRepo:IMoviesRepo {
+    private val listMovies = listOf(
         Movie(
             278,
             "Побег из Шоушенка",
@@ -100,4 +103,10 @@ class LocalMovieRepo:IMovieRepo {
                     "Подруга детства Дженни всегда его поддерживала и защищала, но вскоре дороги их разошлись"
         )
     )
+
+    override fun loadMovies(onSuccess: (List<Movie>) -> Unit, onError: ((Throwable) -> Unit)?) {
+        Handler(Looper.getMainLooper()).postDelayed({
+            onSuccess(listMovies)
+        }, LOAD_DATA_DELAY)
+    }
 }
